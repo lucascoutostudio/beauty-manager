@@ -68,19 +68,19 @@
                     </a>
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                            <a href="https://manager.karolcouto.com.br/bancos/" class="sidebar-link">Bancos</a>
+                            <a href="Banco" class="sidebar-link">Bancos</a>
                         </li>
                     <li class="sidebar-item">
-                        <a href="https://manager.karolcouto.com.br/contas/" class="sidebar-link">Contas</a>
+                        <a href="Conta" class="sidebar-link">Contas</a>
                     </li>    
                     <li class="sidebar-item">
-                            <a href="https://manager.karolcouto.com.br/tipodespesa/" class="sidebar-link">Tipo de despesa</a>
+                            <a href="TipoDespesa" class="sidebar-link">Tipo de despesa</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="https://manager.karolcouto.com.br/despesas/" class="sidebar-link" >Despesas</a>
+                            <a href="Despesa" class="sidebar-link" >Despesas</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="https://manager.karolcouto.com.br/faturas/" class="sidebar-link" >Faturas</a>
+                            <a href="Fatura" class="sidebar-link" >Faturas</a>
                         </li>
                     </ul>
                 </li>

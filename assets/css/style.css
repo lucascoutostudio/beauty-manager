@@ -19,6 +19,14 @@ h1 {
 body {
     font-family: 'Poppins', sans-serif;
 }
+a {
+    color: #703c00;
+    text-decoration: none;
+}
+a:hover {
+    color: #924f01;
+    text-decoration: underline;
+}
 .container {
     
     margin-top: 40px;
