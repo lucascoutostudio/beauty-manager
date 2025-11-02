@@ -63,10 +63,10 @@ class ContaController extends BaseController {
         
         if ($success) {
             // Sucesso
-            BaseController::setFlash("Banco criado com sucesso!", 'success');
+            BaseController::setFlash("Conta criada com sucesso!", 'success');
         } else {
             // Erro
-            BaseController::setFlash("Erro ao criar o banco. Verifique os dados.", 'danger');
+            BaseController::setFlash("Erro ao criar a conta. Verifique os dados.", 'danger');
         }
         
         header('Location: /conta/index/1');
@@ -85,6 +85,7 @@ class ContaController extends BaseController {
         
         if (!$conta) {
             // Redireciona se a conta não for encontrada
+            BaseController::setFlash("Conta não encontrada.", 'danger');
             header('Location: /conta/index/1');
             exit;
         }
@@ -103,6 +104,7 @@ class ContaController extends BaseController {
         
         if (!$conta) {
             // Redireciona se a conta não for encontrada
+            BaseController::setFlash("Conta não encontrada.", 'danger');
             header('Location: /conta/index/1');
             exit;
         }

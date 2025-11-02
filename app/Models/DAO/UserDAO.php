@@ -58,10 +58,12 @@ class UserDAO extends BaseDAO {
                    ':email' => $identifier];
 
         // Use o método para buscar um único resultado
-        $row = $this->execSingleSelect($sql, $params);
-        
-        // Se a linha foi encontrada, retorna um novo objeto User
-        return $row ? new User($row) : null;
+        $user = $this->execSingleDQLClass($sql, $params, 'User');
+        if ($user === null) {
+            return null; // Retorna null se não encontrar
+        }
+        // Se a linha foi encontrada, retorna o objeto User
+        return $user;
         
     }
 }

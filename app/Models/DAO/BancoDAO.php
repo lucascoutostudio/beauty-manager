@@ -26,6 +26,13 @@ class BancoDAO extends BaseDAO
             $params[':nome'] = '%' . $searchTerm . '%';
             $params[':descricao'] = '%' . $searchTerm . '%';
         }
+        // Adiciona filtro para excluir = 0, se ainda não houver WHERE
+        if ($whereClause === "") {
+            $whereClause = " WHERE excluir = 0";
+        } else {
+            // Se já houver WHERE, adicionamos a condição de exclusão
+            $whereClause .= " AND excluir = 0";
+        }
         // Constrói a query completa
         $sql = "SELECT id, nome, descricao, status FROM bancos"
             . $whereClause

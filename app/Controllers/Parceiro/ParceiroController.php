@@ -34,6 +34,41 @@ class ParceiroController extends BaseController
         ]);
     }
 
+    public function detalhes(int $id)
+    {
+        // 1. Instancia o DAO
+        $parceiroDao = new ParceiroDAO(); // Ou PessoaDAO, dependendo de onde o Parceiro herda
+
+        // 2. Busca o parceiro (usando o método Lazy Loading)
+        $parceiro = $parceiroDao->parceiroPorId($id);
+
+        // 3. Verifica se encontrou
+        if (!$parceiro) {
+            // Define o cabeçalho de erro e retorna uma mensagem
+            http_response_code(404);
+            echo json_encode(['error' => 'Parceiro não encontrado.']);
+            exit;
+        }
+
+        // 4. Converte o objeto Parceiro para um array/JSON para a resposta AJAX
+        // Nota: Você deve ter um método na sua entidade (toArray) ou mapear manualmente.
+        $data = [
+            'id'            => $parceiro->getId(),
+            'nomeparceiro'  => $parceiro->getNomeParceiro(),
+            'tipo'           => $parceiro->getTipo(),
+            'descricao'         => $parceiro->getDescricao(),
+            'instagram'      => $parceiro->getInstagram(),
+            'tipoparceria'     => $parceiro->getTipoParceria(),
+            // Adicione todos os campos aqui...
+            'status'        => $parceiro->getStatus()
+        ];
+
+        // 5. Retorna a resposta JSON
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+
     public function editar($id)
     {
         $parceiroDao = new ParceiroDAO();
@@ -117,7 +152,7 @@ class ParceiroController extends BaseController
     {
         $parceiroDao = new ParceiroDAO();
         $result = $parceiroDao->softDeleteParceiro($id);
-        
+
         if ($result === ParceiroDAO::DEPENDENCY_ERROR) {
             BaseController::setFlash("Não é possível excluir este parceiro porque existem clientes vinculadas a ele.", 'warning');
         } elseif ($result) {
@@ -125,7 +160,7 @@ class ParceiroController extends BaseController
         } else {
             BaseController::setFlash("Erro ao excluir o parceiro. Tente novamente.", 'danger');
         }
-        
+
         header('Location: /parceiro/index/1/');
         exit;
     }

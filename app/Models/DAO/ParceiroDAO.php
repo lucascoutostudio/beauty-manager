@@ -19,17 +19,26 @@ class ParceiroDAO extends BaseDAO
         $whereClause = "";
         $params = [];
         if ($searchTerm !== '') {
-            $whereClause = " WHERE CAST(id AS CHAR) LIKE :id OR nomeparceiro LIKE :nomeparceiro OR descricao LIKE :descricao OR tipo LIKE :tipo AND excluir = 0";
+                $whereClause = " WHERE CAST(id AS CHAR) LIKE :id OR nomeparceiro LIKE :nomeparceiro OR descricao LIKE :descricao OR tipo LIKE :tipo AND excluir = 0";
             $params[':id'] = '%' . $searchTerm . '%';
             // O PDO espera o wildcard (%) no valor, não na query
             $params[':nomeparceiro'] = '%' . $searchTerm . '%';
             $params[':descricao'] = '%' . $searchTerm . '%';
             $params[':tipo'] = '%' . $searchTerm . '%';
         }
+        // Adiciona filtro para excluir = 0, se ainda não houver WHERE
+        if ($whereClause === "") {
+            $whereClause = " WHERE excluir = 0";
+        } else {
+            // Se já houver WHERE, adicionamos a condição de exclusão
+            $whereClause .= " AND excluir = 0";
+        }
+
         // Constrói a query completa
-        $sql = "SELECT id, nomeparceiro, tipo, descricao, instagram, tipoparceria, status FROM parceiros"
+        $sql = "SELECT id, nomeparceiro, tipo, descricao, instagram, tipoparceria, status, excluir FROM parceiros"
             . $whereClause
             . " ORDER BY nomeparceiro";
+
 
         // Chamada ao método de paginação, agora com filtro
         $data = $this->execDQLPaginated(
@@ -50,7 +59,7 @@ class ParceiroDAO extends BaseDAO
     public function listarParceiros()
     {
         // Usa o método da classe pai
-        $parceiros = $this->execDQLClass("SELECT id, nomeparceiro, tipo, descricao, instagram, tipoparceria, excluir, dataexclusao FROM parceiros ORDER BY nomeparceiro", [], 'Parceiro');
+        $parceiros = $this->execDQLClass("SELECT id, nomeparceiro, tipo, descricao, instagram, tipoparceria, excluir, dataexclusao FROM parceiros WHERE excluir = 0 ORDER BY nomeparceiro", [], 'Parceiro');
                 
         return $parceiros;
     }
@@ -105,11 +114,46 @@ class ParceiroDAO extends BaseDAO
         return $this->execDML($sql, $params);
     }    
 
+    public function verificarDependencias($sql, int $id): bool {
+        $sqlCheck = $sql;
+        $stmCheck = $this->conn->prepare($sqlCheck);
+        $stmCheck->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmCheck->execute();
+
+        // Retorna true se houver dependências
+        return $stmCheck->fetchColumn() > 0;
+    }
+
     public function softDeleteParceiro($id)
     {
-        $sql = "UPDATE parceiros SET excluir = 1, dataexclusao = NOW() WHERE id = :id";
-        $params = [':id' => $id];
-        return $this->execDML($sql, $params);
+        try {
+            $validaCliente = $this->verificarDependencias(
+                "SELECT COUNT(*) FROM clientes WHERE idparceiro = :id AND excluir = 0",
+                $id
+            );
+            
+            if ($validaCliente) {
+                return self::DEPENDENCY_ERROR;
+            }
+
+            // 2. EXCLUSÃO LÓGICA (SOFT DELETE)
+            // Define 'excluir = 1' e 'dataexclusao' para 30 dias no futuro
+            $sqlDelete = "UPDATE parceiros 
+                          SET excluir = 1, 
+                              dataexclusao = DATE_ADD(CURRENT_DATE(), INTERVAL 30 DAY) 
+                          WHERE id = :id AND excluir = 0"; // Excluir = 0 impede a exclusão de registros já excluídos
+
+            $stmDelete = $this->conn->prepare($sqlDelete);
+            $stmDelete->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmDelete->execute();
+            
+            return $stmDelete->rowCount() > 0; // True se uma linha foi afetada
+            
+        } catch (PDOException $e) {
+            error_log("Erro Soft Delete Banco: " . $e->getMessage());
+            return false;
+        }
+
     }
 
 }

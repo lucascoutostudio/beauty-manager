@@ -68,20 +68,37 @@
                     </a>
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                            <a href="Banco" class="sidebar-link">Bancos</a>
+                            <a href="/Banco" class="sidebar-link">Bancos</a>
                         </li>
                     <li class="sidebar-item">
-                        <a href="Conta" class="sidebar-link">Contas</a>
+                        <a href="/Conta" class="sidebar-link">Contas</a>
                     </li>    
                     <li class="sidebar-item">
-                            <a href="TipoDespesa" class="sidebar-link">Tipo de despesa</a>
+                            <a href="/TipoDespesa" class="sidebar-link">Tipo de despesa</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="Despesa" class="sidebar-link" >Despesas</a>
+                            <a href="/Despesa" class="sidebar-link" >Despesas</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="Fatura" class="sidebar-link" >Faturas</a>
+                            <a href="/Fatura" class="sidebar-link" >Faturas</a>
                         </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#treinamentos" aria-expanded="false" aria-controls="treinamentos">
+                        <i class="bi bi-book-half"></i>
+                        <span>Treinamentos</span>
+                    </a>
+                    <ul id="treinamentos" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="/Curso" class="sidebar-link">Cursos</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="/Turmas" class="sidebar-link" >Turmas</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="/Aluno" class="sidebar-link" >Alunos</a>
                     </ul>
                 </li>
                 <!--<li class="sidebar-item">
